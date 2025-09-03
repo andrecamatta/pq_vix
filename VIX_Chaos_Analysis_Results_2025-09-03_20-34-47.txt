@@ -1,0 +1,53 @@
+================================================================================
+VIX CHAOS ANALYSIS - RESULTADOS QUANTITATIVOS
+================================================================================
+Data da Análise: 03/09/2025 20:34:47
+Período Analisado: 02/01/2004 - 30/12/2024
+Total de Pontos: 5284
+Duração: 14.5 anos
+
+==================================================
+COMPARAÇÃO: VIX vs LORENZ
+==================================================
+
+1. EXPOENTE DE LYAPUNOV
+-==============================
+VIX:    0.03 ± 0.006
+Lorenz: 0.923
+Interpretação: VIX = processo estocástico (λ≈0.03), Lorenz = caos determinístico (λ≈0.9)
+
+2. EXPOENTE DE HURST
+-==============================
+VIX:    0.307
+Lorenz: 1.0
+Interpretação: VIX = anti-persistente (H<0.5), Lorenz = determinístico (H≈1)
+
+3. DIMENSÃO DE CORRELAÇÃO
+-==============================
+VIX:    3.92
+Lorenz: 2.07
+Interpretação: Lorenz = atrator de baixa dimensão, VIX = alta dimensionalidade
+
+4. TESTE DE SURROGATE DATA
+-==============================
+VIX:    p = 0.0323
+Lorenz: p = 0.0099
+Interpretação: Ambos rejeitam hipótese nula (p<0.05) = estrutura temporal detectada
+
+==================================================
+CONCLUSÃO CIENTÍFICA
+==================================================
+VIX: Processo financeiro estocástico com estrutura temporal limitada
+Lorenz: Sistema caótico determinístico clássico
+Metodologia: Algoritmos validados scientificamente (Rosenstein et al., 1993)
+
+==================================================
+PARÂMETROS UTILIZADOS
+==================================================
+VIX - Lyapunov: embedding_dim=3, delay=5, evolve_time=50
+Lorenz - Lyapunov: embedding_dim=5, delay=2, evolve_time=200
+Lorenz - Integração: RK4, dt=0.001, transiente=5000
+Surrogate Test: VIX=30 surrogates, Lorenz=100 surrogates
+
+Arquivo gerado automaticamente pelo sistema de análise VIX
+================================================================================
