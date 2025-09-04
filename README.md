@@ -1,80 +1,80 @@
-# VIX Chaos Analysis - Quantitative Study of Financial Volatility
+# Análise de Caos do VIX - Estudo Quantitativo da Volatilidade Financeira
 
-A comprehensive quantitative analysis of the VIX (Volatility Index) using chaos theory and nonlinear dynamics to distinguish between stochastic financial processes and deterministic chaotic systems.
+Uma análise quantitativa abrangente do VIX (Índice de Volatilidade) usando teoria do caos e dinâmica não-linear para distinguir entre processos financeiros estocásticos e sistemas caóticos determinísticos.
 
-## 🎯 Overview
+## 🎯 Visão Geral
 
-This project implements rigorous scientific methods to analyze VIX data over 20 years (2004-2024), applying:
-- **Takens Embedding** for phase space reconstruction
-- **Lyapunov Exponent** calculation (Rosenstein algorithm)
-- **Hurst Exponent** analysis (R/S method)
-- **Correlation Dimension** (Grassberger-Procaccia)
-- **Surrogate Data Testing** (IAAFT method)
-- **Lorenz Attractor** comparison for chaos benchmarking
+Este projeto implementa métodos científicos rigorosos para analisar dados do VIX ao longo de 20 anos (2004-2024), aplicando:
+- **Embedding de Takens** para reconstrução do espaço de fase
+- **Expoente de Lyapunov** (algoritmo de Rosenstein)
+- **Expoente de Hurst** (método R/S)
+- **Dimensão de Correlação** (Grassberger-Procaccia)
+- **Teste de Dados Substitutos** (método IAAFT)
+- **Atrator de Lorenz** como referência para comparação caótica
 
-## 📊 Key Results
+## 📊 Resultados Principais
 
-**VIX vs Lorenz System Comparison:**
-- **VIX Lyapunov**: 0.03 ± 0.006 (stochastic process)
-- **Lorenz Lyapunov**: 0.923 (deterministic chaos)
-- **Surrogate Test**: VIX does not reject stochasticity hypothesis
-- **Conclusion**: VIX exhibits stochastic behavior, not deterministic chaos
+**Comparação VIX vs Sistema de Lorenz:**
+- **VIX Lyapunov**: 0.03 ± 0.006 (processo estocástico)
+- **Lorenz Lyapunov**: 0.923 (caos determinístico)
+- **Teste Substituto**: VIX não rejeita hipótese de estocasticidade
+- **Conclusão**: VIX exibe comportamento estocástico, não caótico determinístico
 
-## 🚀 Usage
+## 🚀 Como Usar
 
 ```bash
 julia vix_robust_analysis.jl
 ```
 
-The analysis will:
-1. Download real VIX data (20 years)
-2. Perform quantitative chaos analysis
-3. Generate scientific visualization
-4. Export detailed results
+A análise irá:
+1. Baixar dados reais do VIX (20 anos)
+2. Executar análise quantitativa de caos
+3. Gerar visualização científica
+4. Exportar resultados detalhados
 
-## 📁 Output Files
+## 📁 Arquivos de Saída
 
-- `vix_historic_complete.pdf/.png` - Main scientific visualization
-- `VIX_Chaos_Analysis_Results_*.txt` - Quantitative results and parameters
+- `vix_historic_complete.pdf/.png` - Visualização científica principal
+- `VIX_Chaos_Analysis_Results_*.txt` - Resultados quantitativos e parâmetros
 
-## 🔬 Scientific Methodology
+## 🔬 Metodologia Científica
 
-Based on established literature:
-- Rosenstein et al. (1993): Lyapunov exponent calculation
-- Takens (1981): Embedding theorem for phase space reconstruction
-- Theiler et al. (1992): Surrogate data testing methodology
-- Grassberger & Procaccia (1983): Correlation dimension analysis
+Baseada na literatura estabelecida:
+- Rosenstein et al. (1993): Cálculo do expoente de Lyapunov
+- Takens (1981): Teorema de embedding para reconstrução do espaço de fase
+- Theiler et al. (1992): Metodologia de teste com dados substitutos
+- Grassberger & Procaccia (1983): Análise da dimensão de correlação
 
-## 📦 Dependencies
+## 📦 Dependências
 
 ```julia
 using YFinance, Plots, StatsBase, Statistics, Random, Dates, Printf, Distributions
 ```
 
-## 🎨 Features
+## 🎨 Características
 
-- **Real VIX Data**: 20 years of market volatility data
-- **High-Quality Visualization**: Publication-ready figures (300 DPI)
-- **Regime Detection**: Automatic volatility threshold detection
-- **Phase Space Analysis**: 3D embedding visualization
-- **Comparative Analysis**: VIX vs Lorenz system benchmarking
-- **Statistical Rigor**: Error bars, confidence intervals, p-values
+- **Dados Reais do VIX**: 20 anos de dados de volatilidade do mercado
+- **Visualização de Alta Qualidade**: Figuras prontas para publicação (300 DPI)
+- **Detecção de Regimes**: Detecção automática de limiares de volatilidade
+- **Análise do Espaço de Fase**: Visualização de embedding 3D
+- **Análise Comparativa**: Benchmarking VIX vs sistema de Lorenz
+- **Rigor Estatístico**: Barras de erro, intervalos de confiança, p-valores
 
-## 📈 Analysis Panels
+## 📈 Painéis de Análise
 
-1. **Historical Series**: Complete 20-year VIX timeline with regime zones
-2. **Bimodal Distribution**: Probability density with KDE smoothing
-3. **Phase Space 3D**: VIX embedding with Takens reconstruction
-4. **Lorenz Attractor**: Reference chaotic system for comparison
+1. **Série Histórica**: Timeline completa de 20 anos do VIX com zonas de regime
+2. **Distribuição Bimodal**: Densidade de probabilidade com suavização KDE
+3. **Espaço de Fase 3D**: Embedding do VIX com reconstrução de Takens
+4. **Atrator de Lorenz**: Sistema caótico de referência para comparação
 
-## 🧮 Mathematical Framework
+## 🧮 Framework Matemático
 
-- **Embedding Dimension**: 3D for VIX, 5D for Lorenz
-- **Time Delay**: τ=5 days (VIX), τ=2 steps (Lorenz)
-- **Evolution Time**: 50 steps (VIX), 200 steps (Lorenz)
-- **Integration Method**: Runge-Kutta 4th order (Lorenz)
-- **Sampling Rate**: Daily (VIX), dt=0.001 (Lorenz)
+- **Dimensão de Embedding**: 3D para VIX, 5D para Lorenz
+- **Atraso Temporal**: τ=5 dias (VIX), τ=2 passos (Lorenz)
+- **Tempo de Evolução**: 50 passos (VIX), 200 passos (Lorenz)
+- **Método de Integração**: Runge-Kutta 4ª ordem (Lorenz)
+- **Taxa de Amostragem**: Diária (VIX), dt=0.001 (Lorenz)
 
 ---
 
-*This analysis provides scientific evidence that VIX behaves as a stochastic financial process rather than a deterministic chaotic system.*
+*Esta análise fornece evidência científica de que o VIX se comporta como um processo financeiro estocástico em vez de um sistema caótico determinístico.*
