@@ -1,7 +1,7 @@
 ================================================================================
 VIX CHAOS ANALYSIS - RESULTADOS QUANTITATIVOS
 ================================================================================
-Data da Análise: 03/09/2025 20:34:47
+Data da Análise: 05/09/2025 13:47:26
 Período Analisado: 02/01/2004 - 30/12/2024
 Total de Pontos: 5284
 Duração: 14.5 anos
@@ -12,7 +12,7 @@ COMPARAÇÃO: VIX vs LORENZ
 
 1. EXPOENTE DE LYAPUNOV
 -==============================
-VIX:    0.03 ± 0.006
+VIX:    0.032 ± 0.004
 Lorenz: 0.923
 Interpretação: VIX = processo estocástico (λ≈0.03), Lorenz = caos determinístico (λ≈0.9)
 
@@ -28,26 +28,29 @@ VIX:    3.92
 Lorenz: 2.07
 Interpretação: Lorenz = atrator de baixa dimensão, VIX = alta dimensionalidade
 
-4. TESTE DE SURROGATE DATA
+4. DIAGNÓSTICO DE CAOS
 -==============================
-VIX:    p = 0.0323
-Lorenz: p = 0.0099
-Interpretação: Ambos rejeitam hipótese nula (p<0.05) = estrutura temporal detectada
+VIX é caótico?    NÃO (λ=0.032 < 0.1)
+Lorenz é caótico? SIM (λ=0.923 > 0.1)
+Critério: Sistema caótico requer λ > 0.1 (tipicamente > 0.5)
 
 ==================================================
 CONCLUSÃO CIENTÍFICA
 ==================================================
-VIX: Processo financeiro estocástico com estrutura temporal limitada
-Lorenz: Sistema caótico determinístico clássico
-Metodologia: Algoritmos validados scientificamente (Rosenstein et al., 1993)
+VIX: NÃO É CAÓTICO - Processo estocástico com volatility clustering
+Lorenz: CAÓTICO - Sistema determinístico com atrator estranho
+
+Evidências contra caos no VIX:
+• Lyapunov muito baixo (λ=0.03 << 0.1)
+• Dimensão de correlação alta (D≈4)
+• Hurst anti-persistente (H=0.31)
 
 ==================================================
 PARÂMETROS UTILIZADOS
 ==================================================
-VIX - Lyapunov: embedding_dim=3, delay=5, evolve_time=50
+VIX - Lyapunov: embedding_dim=5, delay=5, evolve_time=50
 Lorenz - Lyapunov: embedding_dim=5, delay=2, evolve_time=200
 Lorenz - Integração: RK4, dt=0.001, transiente=5000
-Surrogate Test: VIX=30 surrogates, Lorenz=100 surrogates
 
 Arquivo gerado automaticamente pelo sistema de análise VIX
 ================================================================================

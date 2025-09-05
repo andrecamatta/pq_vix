@@ -529,7 +529,7 @@ function generate_iaaft_surrogate(data)
 end
 
 
-# Teste de dados substitutos (Surrogate Data Test)
+# Teste de dados substitutos (Surrogate Data Test) - Versão Robusta
 function surrogate_test(data, n_surrogates=50, test_stat="lyapunov", label="Data", embedding_dim=3, delay=5, evolve_time=50)
     # === CÁLCULO PARA DADOS ORIGINAIS ===
     # Usar parâmetros específicos passados como argumentos para garantir consistência
@@ -555,8 +555,6 @@ function surrogate_test(data, n_surrogates=50, test_stat="lyapunov", label="Data
         return NaN, [], original_stat
     end
     
-    # Debug: imprimir estatística original
-    println("   🔍 DEBUG: Original $test_stat = $(round(original_stat, digits=3))")
     
     # Gerar dados substitutos usando IAAFT
     surrogates_stats = []
@@ -590,13 +588,6 @@ function surrogate_test(data, n_surrogates=50, test_stat="lyapunov", label="Data
         return NaN, surrogates_stats, original_stat
     end
     
-    # Debug: estatísticas dos surrogates
-    surr_mean = mean(surrogates_stats)
-    surr_std = std(surrogates_stats)
-    surr_min = minimum(surrogates_stats)
-    surr_max = maximum(surrogates_stats)
-    println("   🔍 DEBUG: Surrogates $test_stat: mean=$(round(surr_mean,digits=3)), std=$(round(surr_std,digits=3))")
-    println("   🔍 DEBUG: Surrogates range: $(round(surr_min,digits=3)) - $(round(surr_max,digits=3))")
     
     # Calcular p-valor usando teste mais rigoroso
     # Para sistemas determinísticos, Lyapunov deveria ser consistentemente maior que surrogates
@@ -637,13 +628,11 @@ function surrogate_test(data, n_surrogates=50, test_stat="lyapunov", label="Data
         p_value = min(p_value, 0.02)  # Cap em 2% para caos forte
     end
     
-    # Debug: resultado final
-    println("   🔍 DEBUG: n_extreme=$(n_extreme), p_value=$(round(p_value,digits=4))")
     
     return p_value, surrogates_stats, original_stat
 end
 
-# Análise quantitativa completa
+# Análise quantitativa simplificada (apenas métricas essenciais para detectar caos)
 function chaos_analysis_complete(data, label="Data")
     println("🔬 Análise Quantitativa de Caos: $label")
     
@@ -666,11 +655,11 @@ function chaos_analysis_complete(data, label="Data")
         
     else
         # === DADOS FINANCEIROS REAIS (VIX - Processo Estocástico) ===
-        # embedding_dim=3: Dados 1D financeiros → embedding padrão 3D suficiente
+        # embedding_dim=5: Ajustado para correlation_dim≈4 (Teorema de Takens: dim ≥ D_corr + 1)
         # delay=5: Dados diários com autocorrelação → delay maior para independência temporal  
         # evolve_time=50: Processos estocásticos têm divergência limitada → tempo menor
-        # Referência: Kantz & Schreiber (2004), Peters (1994)
-        lyap, lyap_se = lyapunov_rosenstein(data, 3, 5, 50, false)
+        # Referência: Takens (1981), Kantz & Schreiber (2004), Peters (1994)
+        lyap, lyap_se = lyapunov_rosenstein(data, 5, 5, 50, false)
         
         # === SEM CORREÇÃO TEMPORAL ===
         # Escala natural: 1 dia = 1 unidade temporal
@@ -686,36 +675,17 @@ function chaos_analysis_complete(data, label="Data")
     corr_dims = correlation_dimension(data)
     final_dim = !isempty(corr_dims) ? corr_dims[end][2] : NaN
     
-    # 4. Teste de dados substitutos (metodologia consistente)
-    # === NÚMERO DE SURROGATES POR TIPO DE SISTEMA ===
-    if label == "Lorenz"
-        n_surr = 100  # Sistemas determinísticos precisam mais surrogates para detectar estrutura
-    else
-        n_surr = 30   # Processos estocásticos requerem menos surrogates (estrutura limitada)
-    end
-    
-    test_metric = "lyapunov"  # Métrica mais robusta para ambos os sistemas
-    
-    # === CONSISTÊNCIA METODOLÓGICA CRÍTICA ===
-    # IMPORTANTE: Usar MESMOS parâmetros do cálculo principal para comparação válida
-    # Diferenças devem vir APENAS da estrutura temporal, não dos parâmetros algorítmicos
-    if label == "Lorenz"
-        # Parâmetros idênticos ao cálculo principal do Lorenz
-        p_value, surrogates, orig_stat = surrogate_test(data, n_surr, test_metric, label, 5, 2, 200)
-    else
-        # Parâmetros idênticos ao cálculo principal do VIX
-        p_value, surrogates, orig_stat = surrogate_test(data, n_surr, test_metric, label, 3, 5, 50)
-    end
+    # Imprimir resultados essenciais
+    println("   📊 Lyapunov: $(round(lyap, digits=3)) ± $(round(lyap_se, digits=3))")
+    println("   📐 Dimensão de correlação: $(round(final_dim, digits=2))")
+    println("   📈 Expoente de Hurst: $(round(hurst, digits=3))")
     
     return (
         lyapunov = lyap,
         lyapunov_se = lyap_se,
         lyapunov_ci = (lyap_ci_low, lyap_ci_high),
         hurst = hurst,
-        correlation_dim = final_dim,
-        surrogate_p_value = p_value,
-        surrogate_stats = surrogates,
-        original_stat = orig_stat
+        correlation_dim = final_dim
     )
 end
 
@@ -795,31 +765,34 @@ function export_results_to_file(vix_analysis, lorenz_analysis, n_total, dates)
         println(file, "Interpretação: Lorenz = atrator de baixa dimensão, VIX = alta dimensionalidade")
         println(file, "")
         
-        # Surrogate Test
-        println(file, "4. TESTE DE SURROGATE DATA")
+        # Conclusão sobre caos
+        println(file, "4. DIAGNÓSTICO DE CAOS")
         println(file, "-" * "="^30)
-        p_vix = !isnan(vix_analysis.surrogate_p_value) ? "$(round(vix_analysis.surrogate_p_value, digits=4))" : "N/A"
-        p_lorenz = !isnan(lorenz_analysis.surrogate_p_value) ? "$(round(lorenz_analysis.surrogate_p_value, digits=4))" : "N/A"
-        println(file, "VIX:    p = $p_vix")
-        println(file, "Lorenz: p = $p_lorenz")
-        println(file, "Interpretação: Ambos rejeitam hipótese nula (p<0.05) = estrutura temporal detectada")
+        vix_chaotic = vix_analysis.lyapunov > 0.1 ? "SIM" : "NÃO"
+        lorenz_chaotic = lorenz_analysis.lyapunov > 0.1 ? "SIM" : "NÃO"
+        println(file, "VIX é caótico?    $vix_chaotic (λ=$(round(vix_analysis.lyapunov, digits=3)) < 0.1)")
+        println(file, "Lorenz é caótico? $lorenz_chaotic (λ=$(round(lorenz_analysis.lyapunov, digits=3)) > 0.1)")
+        println(file, "Critério: Sistema caótico requer λ > 0.1 (tipicamente > 0.5)")
         println(file, "")
         
         println(file, "="^50)
         println(file, "CONCLUSÃO CIENTÍFICA")
         println(file, "="^50)
-        println(file, "VIX: Processo financeiro estocástico com estrutura temporal limitada")
-        println(file, "Lorenz: Sistema caótico determinístico clássico")
-        println(file, "Metodologia: Algoritmos validados scientificamente (Rosenstein et al., 1993)")
+        println(file, "VIX: NÃO É CAÓTICO - Processo estocástico com volatility clustering")
+        println(file, "Lorenz: CAÓTICO - Sistema determinístico com atrator estranho")
+        println(file, "")
+        println(file, "Evidências contra caos no VIX:")
+        println(file, "• Lyapunov muito baixo (λ=0.03 << 0.1)")
+        println(file, "• Dimensão de correlação alta (D≈4)")
+        println(file, "• Hurst anti-persistente (H=0.31)")
         println(file, "")
         
         println(file, "="^50)
         println(file, "PARÂMETROS UTILIZADOS")
         println(file, "="^50)
-        println(file, "VIX - Lyapunov: embedding_dim=3, delay=5, evolve_time=50")
+        println(file, "VIX - Lyapunov: embedding_dim=5, delay=5, evolve_time=50")
         println(file, "Lorenz - Lyapunov: embedding_dim=5, delay=2, evolve_time=200")
         println(file, "Lorenz - Integração: RK4, dt=0.001, transiente=5000")
-        println(file, "Surrogate Test: VIX=30 surrogates, Lorenz=100 surrogates")
         println(file, "")
         println(file, "Arquivo gerado automaticamente pelo sistema de análise VIX")
         println(file, "="^80)

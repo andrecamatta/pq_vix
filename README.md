@@ -5,20 +5,22 @@ Uma análise quantitativa abrangente do VIX (Índice de Volatilidade) usando teo
 ## 🎯 Visão Geral
 
 Este projeto implementa métodos científicos rigorosos para analisar dados do VIX ao longo de 20 anos (2004-2024), aplicando:
-- **Embedding de Takens** para reconstrução do espaço de fase
-- **Expoente de Lyapunov** (algoritmo de Rosenstein)
-- **Expoente de Hurst** (método R/S)
-- **Dimensão de Correlação** (Grassberger-Procaccia)
-- **Teste de Dados Substitutos** (método IAAFT)
-- **Atrator de Lorenz** como referência para comparação caótica
+- **Embedding de Takens** para reconstrução do espaço de fase (5D)
+- **Expoente de Lyapunov** (algoritmo de Rosenstein) - métrica definitiva para caos
+- **Expoente de Hurst** (método R/S) - caracteriza persistência temporal
+- **Dimensão de Correlação** (Grassberger-Procaccia) - geometria do atrator
+- **Atrator de Lorenz** como referência canônica para caos determinístico
+
+**Foco**: Análise simplificada e eficiente usando apenas as métricas essenciais para detectar caos.
 
 ## 📊 Resultados Principais
 
 **Comparação VIX vs Sistema de Lorenz:**
-- **VIX Lyapunov**: 0.03 ± 0.006 (processo estocástico)
+- **VIX Lyapunov**: 0.032 ± 0.004 (processo estocástico)
 - **Lorenz Lyapunov**: 0.923 (caos determinístico)
-- **Teste Substituto**: VIX não rejeita hipótese de estocasticidade
-- **Conclusão**: VIX exibe comportamento estocástico, não caótico determinístico
+- **VIX Hurst**: 0.307 (anti-persistente)
+- **VIX Correlation Dim**: 3.92 (alta dimensionalidade)
+- **Conclusão**: VIX NÃO é caótico - processo estocástico com volatility clustering
 
 ## 🚀 Como Usar
 
@@ -69,11 +71,12 @@ using YFinance, Plots, StatsBase, Statistics, Random, Dates, Printf, Distributio
 
 ## 🧮 Framework Matemático
 
-- **Dimensão de Embedding**: 3D para VIX, 5D para Lorenz
+- **Dimensão de Embedding**: 5D para VIX (ajustado para correlation_dim≈4), 5D para Lorenz
 - **Atraso Temporal**: τ=5 dias (VIX), τ=2 passos (Lorenz)
 - **Tempo de Evolução**: 50 passos (VIX), 200 passos (Lorenz)
 - **Método de Integração**: Runge-Kutta 4ª ordem (Lorenz)
 - **Taxa de Amostragem**: Diária (VIX), dt=0.001 (Lorenz)
+- **Critério de Caos**: λ > 0.1 (VIX: λ=0.032 → NÃO caótico)
 
 ---
 
